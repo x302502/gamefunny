@@ -31,4 +31,11 @@ Route::post('artist', 'ArtistController@store');
 Route::put('artist/{id}', 'ArtistController@update');
 Route::delete('artist/{id}', 'ArtistController@delete');
 
+
+Route::get('monthofbirth', 'MonthOfBirthController@index');
+Route::get('monthofbirth/{id}', 'MonthOfBirthController@show');
+Route::post('monthofbirth', 'MonthOfBirthController@store');
+Route::put('monthofbirth/{id}', 'MonthOfBirthController@update');
+Route::delete('monthofbirth/{id}', 'MonthOfBirthController@delete');
+
 Route::get('person', 'PersonController@index');

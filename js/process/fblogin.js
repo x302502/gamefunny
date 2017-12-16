@@ -12,23 +12,43 @@ class myPair{
 }
 // Facebook login with JavaScript SDK
 
-function fbLogin() {
+// function fbLogin() {
+//     FB.login(function (data) {
+//         console.log(data.authResponse);
+//         getData();
+//     }, {scope: 'email,public_profile,user_friends,publish_actions,user_birthday'});
+// }
+function playGame(id) {
     FB.login(function (data) {
         console.log(data.authResponse);
-        getData();
-    }, {scope: 'email,public_profile,user_friends,publish_actions,user_birthday'});
+        getGame(id);
+    }, {scope: 'email,public_profile,user_friends,publish_actions,user_birthday,user_likes,read_custom_friendlists,user_photos'});
 }
-function getData() {
-    FB.api('/me/', {
-        fields: 'id,name,birthday,picture,address'
-    }, function (user) {
-        console.log(user);
-        dt=convertDateMDY(user.birthday);
-        key=valueMonthDay(dt.getMonth(),dt.getDate());
-        getArtists(key,user);
+function getGame(id) {
+    switch (id) {
+      case 1:
+        game1();
+        break;
+      case 6:
+        game6();
+      break;
+      default:
+          gameTest();
+    }
 
-    });
 }
+function game1() {
+  FB.api('/me/', {
+      fields: 'id,name,birthday,picture,address'
+  }, function (user) {
+      // console.log(user);
+      dt=convertDateMDY(user.birthday);
+      key=valueMonthDay(dt.getMonth(),dt.getDate());
+      getArtists(key,user);
+
+  });
+}
+
 function getArtists(key,user){
     $.ajax({
         type: "GET",
@@ -41,9 +61,9 @@ function getArtists(key,user){
                 resvalue=valueMonthDay(dt.getMonth(),dt.getDate());
                 res=new myPair(item.id,resvalue);
                 list.push(res);
-             
+
             });
-      
+
             list.sort(function (a,b){
                 return a.value-b.value;
             });
@@ -53,14 +73,14 @@ function getArtists(key,user){
             var result;
             if(list[temp1].value-key < list[temp2].value){
                 result=data[list[temp1].key];
-            }  
+            }
             else{
                 result=data[list[temp2].key];
             }
-            $("#play-finish").html('<h3>Bạn sinh vào ngày gần như '+result.job+' '+result.name+'</h3>'+
+            $("#play-finish").html('<h3>Bạn sinh vào ngày gần giống '+result.job+' '+result.name+'</h3>'+
             '<div class="row"> ' +
             '<div class="col-md-6">'+
-            ' <img src="img/'+result.picture+'" class="circle" style="width:100%;height:300px;"> </div> '+
+            ' <img src="img/artist/'+result.picture+'" class="circle" style="width:100%;height:300px;"> </div> '+
             '<div class="col-md-6">'+
             ' <img src="'+user.picture.data.url+'" class="circle" style="width:100%;height:300px;"> </div> '+
             ' </div>'+
@@ -94,7 +114,7 @@ function binarySearch(arr,key){
     right=arr.length-1;
     while(left<=right){
         mid=parseInt((left +right)/2);
-       
+
         if(arr[mid]<key){
             left=mid+1;
         }else{
@@ -104,7 +124,7 @@ function binarySearch(arr,key){
             right=mid-1;
         }
     }
-    return -1;   
+    return -1;
 }
 function upperBound(arr,key){
     left=0;
@@ -146,13 +166,45 @@ function lowerBound(arr,key){
         }
     }
 }
-// $.ajax({
-//     type: "GET",
-//     url: "./api/person",
-//     success: function (data) {
-//         // data.forEach(item => {
-//         //     console.log(item);
-//         // });
-//         console.log(data[0]);
-//     }
-// });
+function game6() {
+  FB.api('/me/', {
+      fields: 'id,name,birthday,picture'
+  }, function (user) {
+      console.log(user);
+      dt=convertDateMDY(user.birthday);
+      checkMonthOfBirth(user.name,user.picture.data.url,dt.getMonth()+1);
+  });
+}
+function checkMonthOfBirth(name,picture,month){
+    $.ajax({
+      url: './api/monthofbirth',
+      type: 'GET',
+      success: function(data) {
+        console.log(data);
+        data.forEach(item => {
+            if(item.month===month){
+              $("#play-finish").html("");
+              $("#play-finish").attr('align', '');
+              $("#play-finish").append('<h1>'+name+' sinh vào tháng '+month+ ': </h1>');
+              $("#play-finish").append('<img style="width:30%;" src='+picture+'>');
+              loadItemMonthOfBirth(item);
+              return;
+            }
+        });
+      }
+    });
+}
+function loadItemMonthOfBirth(item) {
+    $("#play-finish").append('<h3> <span style="color:red">Tính cách: </span>'+item.genitive+'</h3>');
+    $("#play-finish").append('<h3> <span style="color:red">Công việc: </span>'+item.job+'</h3>');
+    $("#play-finish").append('<h3> <span style="color:red">Tình yêu: </span>'+item.love+'</h3>');
+}
+function gameTest() {
+    FB.api('/me/', {
+        fields: 'name,photos'
+    }, function (user) {
+        // console.log(user);
+        console.log(user);
+  
+    });
+  }
