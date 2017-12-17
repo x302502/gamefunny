@@ -38,4 +38,8 @@ Route::post('monthofbirth', 'MonthOfBirthController@store');
 Route::put('monthofbirth/{id}', 'MonthOfBirthController@update');
 Route::delete('monthofbirth/{id}', 'MonthOfBirthController@delete');
 
+Route::get('namekr/{numYear}/{numMonth}/{numDay}', 'NameKrController@getname');
+
+Route::get('namejp', 'NameJpController@index');
+
 Route::get('person', 'PersonController@index');

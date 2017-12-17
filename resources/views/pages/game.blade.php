@@ -31,5 +31,7 @@
 </div>
 <script src="js/process/fblogin.js"></script>
 <script src="js/process/game1.js"></script>
+<script src="js/process/game2.js"></script>
 <script src="js/process/game6.js"></script>
+<script src="js/process/game7.js"></script>
 @endsection
